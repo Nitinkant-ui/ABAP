@@ -1,0 +1,46 @@
+*&---------------------------------------------------------------------*
+*& Report ZDSA_NK_2
+*&---------------------------------------------------------------------*
+*& Unique Character Identification with n square complexity
+*&---------------------------------------------------------------------*
+REPORT ZDSA_NK_2.
+
+******************** Data Declaration *******************
+
+PARAMETERS : p_word TYPE string DEFAULT 'loveleetcode'.
+
+TYPES : BEGIN OF ty_char,
+          character TYPE c,
+        END OF ty_char.
+
+TYPES : ty_charset TYPE STANDARD TABLE OF ty_char WITH DEFAULT KEY.
+DATA : it_charset TYPE STANDARD TABLE OF ty_char,
+      it_charset_tmp TYPE STANDARD TABLE OF ty_char,
+       wa_charset TYPE ty_char.
+
+
+***  Length of the String passed in parameter
+DATA(string_length) = strlen( p_word ).
+
+
+********************* Fill in Internal Table from String p_word - loveleetcode *******************
+it_charset = VALUE ty_charset( FOR i = 0 THEN i + 1 UNTIL i > string_length - 1
+                                 (
+                                 character  = p_word+i(1)
+                                  )  ).
+
+
+
+********************* Fill in Internal Table from String p_word - loveleetcode *******************
+
+LOOP AT it_charset INTO wa_charset.
+  it_charset_tmp = it_charset.
+  delete it_charset_tmp INDEX sy-tabix.
+  DATA(pos) = sy-tabix - 1.
+  READ TABLE it_charset_tmp ASSIGNING FIELD-SYMBOL(<fs_charset>) WITH KEY character = wa_charset-character.
+  IF sy-subrc NE 0.
+    WRITE : pos.
+    EXIT.
+  ENDIF.
+ENDLOOP.
+ WRITE : '-1'.
